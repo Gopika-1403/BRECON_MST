@@ -1,0 +1,1817 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<link rel="icon" type="image/png" th:href="@{/images/favicon_bob.png}">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BRECON | RFI</title>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/jquery-ui.min.js}"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+#rfiPage { -
+	-brand: #386b7e; -
+	-brand-dark: #2c5667; -
+	-ink: #263746; -
+	-text: #111111; -
+	-muted: #6b7a88; -
+	-line: #d5dce2; -
+	-head-bg: #e9edf1; -
+	-head-hover: #dce3e9; -
+	-row-alt: #f7f9fb; -
+	-row-hover: #eaf2f5;
+}
+
+#rfiPage {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	font-family: Arial, sans-serif;
+	color: var(- -text);
+}
+
+#rfiPage .source-data-wrapper {
+	width: calc(100% - 60px);
+	height: 100%;
+	max-width: none;
+	margin: 30px auto;
+	box-sizing: border-box;
+}
+
+#rfiPage .source-data-card {
+	width: 100%;
+	background: #ffffff;
+	border-radius: 14px;
+	box-shadow: 0 12px 32px rgba(20, 40, 55, 0.14);
+	overflow: visible;
+	box-sizing: border-box;
+}
+
+#rfiPage .source-data-header {
+	height: 46px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(180deg, var(- -brand) 0%, var(- -brand-dark)
+		100%);
+	color: #ffffff;
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing: .3px;
+	border-radius: 14px 14px 0 0;
+}
+
+#rfiPage .source-data-header i {
+	margin-right: 8px;
+}
+
+#rfiPage .source-data-table-wrapper {
+	padding: 14px 14px 6px 14px;
+	box-sizing: border-box;
+	overflow: visible;
+}
+/* Category Nav */
+#rfiPage .category-nav-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	table-layout: fixed;
+	font-size: 13px;
+	border: 1px solid var(- -line);
+	border-radius: 10px 10px 0 0;
+	background: var(- -head-bg);
+}
+
+#rfiPage .category-nav-table th {
+	padding: 0;
+	height: 42px;
+	vertical-align: middle;
+	white-space: nowrap;
+	border-bottom: 2px solid var(- -brand);
+	border-right: 1px solid var(- -line);
+	position: relative;
+}
+
+#rfiPage .category-nav-table th:first-child {
+	border-top-left-radius: 9px;
+}
+
+#rfiPage .category-nav-table th:last-child {
+	border-top-right-radius: 9px;
+	border-right: none;
+}
+
+#rfiPage .source-header-clickable {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	padding: 0 12px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: bold;
+	color: var(- -ink);
+	box-sizing: border-box;
+	transition: all 0.15s ease;
+}
+
+#rfiPage .source-header-clickable:hover {
+	background: var(- -head-hover);
+	color: var(- -brand-dark);
+}
+
+#rfiPage .source-header-clickable.active {
+	background: #ffffff;
+	color: var(- -brand);
+	box-shadow: inset 0 -3px 0 var(- -brand);
+}
+
+#rfiPage .source-header-clickable .source-badge {
+	font-size: 11px;
+	padding: 2px 7px;
+	border-radius: 10px;
+	background: #cbd5e1;
+	color: #334155;
+	font-weight: normal;
+}
+
+#rfiPage .source-header-clickable.has-data .source-badge {
+	background: #28a745;
+	color: #ffffff;
+	font-weight: bold;
+}
+
+/* Dropdowns */
+#rfiPage .dropdown-header-cell {
+	overflow: visible !important;
+}
+
+#rfiPage .action-dropdown {
+	position: relative;
+	width: 100%;
+	height: 42px;
+}
+
+#rfiPage .upload-btn, #rfiPage .header-action-btn {
+	width: 100%;
+	height: 42px;
+	padding: 0 12px;
+	border: none;
+	background: transparent;
+	color: var(- -ink);
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: left;
+	cursor: pointer;
+	letter-spacing: .3px;
+	transition: background .15s ease;
+}
+
+#rfiPage .upload-btn:hover, #rfiPage .header-action-btn:hover {
+	background: var(- -head-hover);
+}
+
+#rfiPage .upload-btn i, #rfiPage .header-action-btn i {
+	margin-right: 6px;
+	color: var(- -brand);
+}
+
+#rfiPage .dropdown-arrow {
+	float: right;
+	font-size: 11px;
+	margin-top: 2px;
+	transition: transform .15s ease;
+}
+
+#rfiPage .action-dropdown.open .dropdown-arrow {
+	transform: rotate(180deg);
+}
+
+.action-dropdown.open .header-action-btn, #rfiPage .action-dropdown.open .upload-btn
+	{
+	background: var(- -head-hover);
+}
+
+#rfiPage .action-dropdown-menu {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	min-width: 100%;
+	width: 170px;
+	margin-top: 2px;
+	background: #ffffff;
+	border: 1px solid #c3ccd3;
+	border-radius: 8px;
+	box-shadow: 0 10px 24px rgba(20, 40, 55, 0.22);
+	overflow: hidden;
+	z-index: 9999;
+	box-sizing: border-box;
+}
+
+#rfiPage .action-dropdown.open .action-dropdown-menu {
+	display: block;
+}
+
+#rfiPage .action-dropdown-menu a {
+	display: block;
+	height: 38px;
+	line-height: 38px;
+	padding: 0 14px;
+	color: var(- -text);
+	text-decoration: none;
+	font-size: 13px;
+	border-bottom: 1px solid #edf0f2;
+}
+
+#rfiPage .action-dropdown-menu a:last-child {
+	border-bottom: none;
+}
+
+#rfiPage .action-dropdown-menu a:hover {
+	background: var(- -head-bg);
+	color: var(- -brand-dark);
+}
+
+#rfiPage .action-dropdown-menu a i {
+	width: 18px;
+	margin-right: 6px;
+	color: var(- -brand);
+}
+
+/* Container Sections */
+#rfiPage .file-list-container {
+	border: 1px solid var(- -line);
+	border-top: none;
+	background: #ffffff;
+	overflow: hidden;
+	margin-bottom: 16px;
+}
+
+#rfiPage .file-list-title-bar {
+	padding: 8px 12px;
+	background: #f8fafc;
+	border-bottom: 1px solid var(- -line);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 13px;
+	color: var(- -ink);
+}
+
+#rfiPage .file-list-title-bar strong {
+	color: var(- -brand-dark);
+	font-size: 14px;
+}
+
+#rfiPage .dedicated-file-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12.5px;
+}
+
+#rfiPage .dedicated-file-table th {
+	background: #f1f5f9;
+	color: var(- -ink);
+	text-align: left;
+	padding: 6px 8px;
+	border-bottom: 1px solid var(- -line);
+	font-weight: 600;
+}
+
+#rfiPage .dedicated-file-table td {
+	padding: 4px 8px;
+	border-bottom: 1px solid #edf2f7;
+	color: var(- -text);
+	vertical-align: middle;
+	line-height: 1.2;
+}
+
+#rfiPage .dedicated-file-table tr:nth-child(even) td {
+	background: var(- -row-alt);
+}
+
+#rfiPage .dedicated-file-table tr:hover td {
+	background: var(- -row-hover);
+}
+
+#rfiPage .file-name-cell {
+	font-weight: bold;
+	color: var(- -brand-dark);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+#rfiPage .file-name-cell i {
+	color: #1d6f42;
+	font-size: 16px;
+}
+
+#rfiPage #rfi-uploadStatusMsg {
+	display: none;
+	padding: 10px;
+	text-align: center;
+	background: #e0f2fe;
+	color: #0369a1;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+#rfiPage .badge-success-count {
+	background: #dcfce7;
+	color: #15803d;
+	font-weight: bold;
+	padding: 2px 8px;
+	border-radius: 12px;
+	border: 1px solid #bbf7d0;
+	display: inline-block;
+}
+
+#rfiPage .badge-zero-count {
+	background: #fee2e2;
+	color: #b91c1c;
+	font-weight: bold;
+	padding: 2px 8px;
+	border-radius: 12px;
+	border: 1px solid #fecaca;
+	display: inline-block;
+}
+
+/* Error Reason: Plain Text Style (No Box/Border) */
+#rfiPage .badge-error-pill {
+	background: transparent;
+	border: none;
+	padding: 0;
+	color: #dc2626;
+	font-size: 11.5px;
+	font-weight: bold;
+}
+
+/* Toolbar & Action Buttons */
+#rfiPage .failed-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+#rfiPage .action-btn-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	justify-content: center;
+}
+
+/* Action Buttons: Plain Text / Link Style (No Box/Background) */
+#rfiPage .edit-fail-btn {
+	background: transparent;
+	color: var(- -brand);
+	border: none;
+	padding: 0;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+#rfiPage .edit-fail-btn:hover {
+	background: transparent;
+	color: var(- -brand-dark);
+	text-decoration: underline;
+}
+
+#rfiPage .delete-fail-btn {
+	background: transparent;
+	color: #dc2626;
+	border: none;
+	padding: 0;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+#rfiPage .delete-fail-btn:hover {
+	background: transparent;
+	color: #b91c1c;
+	text-decoration: underline;
+}
+
+#rfiPage .download-fail-btn {
+	background: #15803d;
+	color: #ffffff;
+	border: none;
+	border-radius: 6px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background .15s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+#rfiPage .download-fail-btn:hover {
+	background: #166534;
+}
+
+#rfiPage .bulk-delete-btn {
+	display: none;
+	background: #dc2626;
+	color: #ffffff;
+	border: none;
+	border-radius: 6px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background .15s ease;
+}
+
+#rfiPage .bulk-delete-btn:hover {
+	background: #b91c1c;
+}
+
+#rfiPage .delete-all-btn {
+	background: #991b1b;
+	color: #ffffff;
+	border: none;
+	border-radius: 6px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background .15s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+#rfiPage .delete-all-btn:hover {
+	background: #7f1d1d;
+}
+
+#rfiPage .checkbox-cell {
+	text-align: center !important;
+	width: 32px;
+}
+
+#rfiPage .row-select-checkbox, #rfiPage #rfi-selectAllFailed {
+	cursor: pointer;
+	width: 14px;
+	height: 14px;
+	vertical-align: middle;
+}
+
+/* Pagination Styles */
+#rfiPage .table-pagination-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 12px;
+	background: #ffffff;
+	border-top: 1px solid var(- -line);
+	font-size: 12px;
+	color: var(- -ink);
+}
+
+#rfiPage .pagination-page-size-wrap {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+#rfiPage .pagination-page-size-wrap select {
+	padding: 2px 6px;
+	border: 1px solid #cbd5e1;
+	border-radius: 4px;
+	font-size: 12px;
+	outline: none;
+	background: #ffffff;
+}
+
+#rfiPage .pagination-nav-wrap {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+#rfiPage .pagination-btn {
+	background: #ffffff;
+	border: 1px solid #cbd5e1;
+	border-radius: 4px;
+	padding: 3px 8px;
+	font-size: 11.5px;
+	color: var(- -ink);
+	cursor: pointer;
+	transition: all .15s ease;
+}
+
+#rfiPage .pagination-btn:hover:not(:disabled) {
+	background: var(- -head-bg);
+	border-color: var(- -brand);
+	color: var(- -brand-dark);
+}
+
+#rfiPage .pagination-btn.active {
+	background: var(- -brand);
+	color: #ffffff;
+	border-color: var(- -brand);
+	font-weight: bold;
+}
+
+#rfiPage .pagination-btn:disabled {
+	background: #f1f5f9;
+	color: #94a3b8;
+	cursor: not-allowed;
+	border-color: #e2e8f0;
+}
+
+#rfiPage .no-data {
+	text-align: center !important;
+	color: var(- -muted) !important;
+	padding: 16px 10px !important;
+	font-size: 13px;
+}
+
+#rfiPage .no-data i {
+	display: block;
+	font-size: 20px;
+	margin-bottom: 4px;
+	color: #b4c2cc;
+}
+
+#rfiPage .source-data-footer {
+	border-top: 1px solid #e3e8ec;
+	padding: 10px 0;
+	text-align: center;
+	background: #ffffff;
+	border-radius: 0 0 14px 14px;
+}
+
+#rfiPage .source-btn {
+	display: inline-block;
+	padding: 6px 14px;
+	margin: 0 3px;
+	background: #ffffff;
+	border: 1px solid #8a98a3;
+	border-radius: 6px;
+	color: var(- -ink);
+	font-size: 13px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#rfiPage .source-btn:hover {
+	background: var(- -head-bg);
+	border-color: var(- -brand);
+	color: #000;
+}
+
+/* MODAL POPUPS */
+#rfiPage .failed-modal-overlay {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(20, 35, 45, 0.6);
+	z-index: 10000;
+	align-items: center;
+	justify-content: center;
+}
+
+#rfiPage .failed-modal-overlay.open {
+	display: flex;
+}
+
+#rfiPage .failed-modal-card {
+	width: 520px;
+	max-width: 92vw;
+	background: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+	overflow: hidden;
+	animation: modalFadeIn 0.18s ease-out;
+}
+
+@
+keyframes modalFadeIn {from { transform:scale(0.94);
+	opacity: 0;
+}
+
+to {
+	transform: scale(1);
+	opacity: 1;
+}
+
+}
+#rfiPage .failed-modal-header {
+	padding: 12px 18px;
+	background: linear-gradient(180deg, var(- -brand) 0%, var(- -brand-dark)
+		100%);
+	color: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#rfiPage .failed-modal-close-x {
+	background: transparent;
+	border: none;
+	color: #ffffff;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+#rfiPage .failed-modal-body {
+	padding: 16px 20px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+#rfiPage .failed-field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+#rfiPage .failed-field.full {
+	grid-column: 1/-1;
+}
+
+#rfiPage .failed-field label {
+	font-size: 11.5px;
+	font-weight: bold;
+	color: var(- -ink);
+}
+
+#rfiPage .failed-field input {
+	height: 33px;
+	padding: 4px 9px;
+	border: 1px solid #cbd5e1;
+	border-radius: 5px;
+	font-size: 12.5px;
+	outline: none;
+}
+
+#rfiPage .failed-field input:focus {
+	border-color: var(- -brand);
+	box-shadow: 0 0 0 2px rgba(56, 107, 126, 0.15);
+}
+
+#rfiPage .failed-modal-footer {
+	padding: 12px 20px;
+	background: #f8fafc;
+	border-top: 1px solid #e2e8f0;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+#rfiPage .modal-submit-btn {
+	background: #16a34a;
+	color: #ffffff;
+	border: none;
+	padding: 7px 15px;
+	border-radius: 5px;
+	font-size: 12.5px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#rfiPage .modal-submit-btn:hover {
+	background: #15803d;
+}
+
+#rfiPage .modal-cancel-btn {
+	background: #ffffff;
+	border: 1px solid #cbd5e1;
+	padding: 7px 14px;
+	border-radius: 5px;
+	font-size: 12.5px;
+	cursor: pointer;
+}
+
+/* CUSTOM NOTIFICATION / CONFIRMATION MODAL */
+#rfiPage .action-alert-body {
+	padding: 24px 20px 20px 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+#rfiPage .action-alert-icon {
+	font-size: 42px;
+	margin-bottom: 14px;
+}
+
+#rfiPage .action-alert-icon.success {
+	color: #16a34a;
+}
+
+#rfiPage .action-alert-icon.error {
+	color: #dc2626;
+}
+
+#rfiPage .action-alert-icon.warning {
+	color: #d97706;
+}
+
+#rfiPage .action-alert-icon.info {
+	color: #0284c7;
+}
+
+#rfiPage .action-alert-title {
+	font-size: 16px;
+	font-weight: bold;
+	color: var(- -ink);
+	margin-bottom: 8px;
+}
+
+#rfiPage .action-alert-text {
+	font-size: 13px;
+	color: #475569;
+	line-height: 1.5;
+	white-space: pre-line;
+}
+
+#rfiPage .rfi-file-cards {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+#rfiPage .rfi-file-cards .source-header-clickable {
+	min-height: 76px;
+	padding: 12px 14px;
+	justify-content: flex-start;
+	gap: 12px;
+	text-align: left;
+	border: 1px solid var(- -line);
+	border-radius: 10px;
+	background: #f8fafc;
+}
+
+#rfiPage .rfi-file-cards .source-header-clickable:hover, #rfiPage .rfi-file-cards .source-header-clickable.active
+	{
+	border-color: var(- -brand);
+	background: #edf5f7;
+}
+
+#rfiPage .rfi-file-cards .source-header-clickable.active {
+	box-shadow: inset 3px 0 0 var(- -brand);
+}
+
+#rfiPage .rfi-card-icon {
+	display: grid;
+	place-items: center;
+	flex: 0 0 38px;
+	height: 38px;
+	border-radius: 8px;
+	background: #dcebef;
+	color: var(- -brand-dark);
+	font-size: 16px;
+}
+
+#rfiPage .rfi-card-details {
+	display: grid;
+	justify-items: start;
+	gap: 5px;
+	min-width: 0;
+}
+
+#rfiPage .rfi-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+#rfiPage .rfi-toolbar .action-dropdown {
+	width: auto;
+	height: auto;
+}
+
+#rfiPage .rfi-toolbar .upload-btn, #rfiPage .rfi-toolbar .header-action-btn
+	{
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	width: auto;
+	height: 34px;
+	border: 1px solid var(- -line);
+	border-radius: 6px;
+	background: #fff;
+}
+
+#rfiPage .rfi-toolbar .upload-btn, #rfiPage .rfi-toolbar .upload-btn:hover,
+	#rfiPage .rfi-toolbar .action-dropdown.open .upload-btn {
+	background: var(- -brand-dark);
+	border-color: var(- -brand-dark);
+	color: #fff;
+}
+
+#rfiPage .rfi-toolbar button i {
+	margin-right: 0;
+	color: inherit;
+}
+
+#rfiPage .rfi-toolbar .dropdown-arrow {
+	margin-top: 0;
+}
+
+#rfiPage .rfi-toolbar .action-dropdown-menu {
+	left: auto;
+	right: 0;
+	width: 185px;
+}
+
+#rfiPage .file-list-container {
+	border: 1px solid var(- -line);
+	border-radius: 10px;
+	overflow-x: auto;
+}
+
+@media ( max-width : 700px) {
+	#rfiPage .source-data-wrapper {
+		width: calc(100% - 24px);
+		margin: 12px auto;
+	}
+	#rfiPage .rfi-file-cards {
+		grid-template-columns: 1fr;
+	}
+	#rfiPage .rfi-toolbar {
+		justify-content: flex-start;
+	}
+	#rfiPage .rfi-toolbar .action-dropdown-menu {
+		left: 0;
+		right: auto;
+	}
+	#rfiPage .file-list-title-bar, #rfiPage .failed-toolbar {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	#rfiPage .dedicated-file-table {
+		min-width: 560px;
+	}
+}
+</style>
+
+<script>
+        (function ($) {
+        var labels = { CBS: 'CBS File/Statement', KTP: 'KTP File', QLIK: 'Qlik Report' };
+        var categories = Object.keys(labels);
+        var activeCategory = 'CBS';
+        var currentUploadType = '';
+        var dbRowCounts = { CBS: 0, KTP: 0, QLIK: 0 };
+        var uploadedFilesStore = { CBS: [], KTP: [], QLIK: [] };
+        var failedRequest;
+
+        function endpoint(action) {
+            return $('#rfiPage').attr('data-api-base') + '/' + action;
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+            });
+        }
+
+        // Confirmation modal callback
+        var currentConfirmCallback = null;
+
+        // Pagination & Multi-Selection Cache for Failed Records
+        var failedRecordsDataset = [];
+        var currentPageFailed = 1;
+        var pageSizeFailed = 10;
+        var selectedFailedIds = new Set();
+
+        $(function () {
+            if (!document.getElementById("rfiPage")) return;
+            var $upDd  = $('#rfi-uploadDropdown');
+            var $upBtn = $('#rfi-uploadButton');
+            var $xlDd  = $('#rfi-excelDropdown');
+            var $xlBtn = $('#rfi-excelButton');
+
+            // Keep aria-expanded in sync with the "open" class (moved inside DOM-ready)
+            var dropdownObserver = new MutationObserver(function () {
+                $upBtn.attr('aria-expanded', String($upDd.hasClass('open')));
+                $xlBtn.attr('aria-expanded', String($xlDd.hasClass('open')));
+            });
+            dropdownObserver.observe($upDd[0], { attributes: true, attributeFilter: ['class'] });
+            dropdownObserver.observe($xlDd[0], { attributes: true, attributeFilter: ['class'] });
+
+            refreshLiveDbCounts();
+
+            $upBtn.on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $xlDd.removeClass('open');
+                $upDd.toggleClass('open');
+            });
+
+            $xlBtn.on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $upDd.removeClass('open');
+                $xlDd.toggleClass('open');
+            });
+
+            $(document).off('.rfiPage').on('click.rfiPage', function (e) {
+                if (!$(e.target).closest('#rfi-uploadDropdown').length) { $upDd.removeClass('open'); }
+                if (!$(e.target).closest('#rfi-excelDropdown').length) { $xlDd.removeClass('open'); }
+            });
+
+            $(document).on('keydown.rfiPage', function (e) {
+                if (e.key === 'Escape' && document.getElementById('rfiPage')) {
+                    $upDd.removeClass('open');
+                    $xlDd.removeClass('open');
+                    closeEditModal();
+                    closeAppModal();
+                }
+            });
+
+            $('#rfi-uploadMenu a').on('click', function (e) {
+                e.preventDefault();
+                currentUploadType = $(this).data('type');
+                $upDd.removeClass('open');
+                $('#rfi-excelFileInput').val('');
+                $('#rfi-excelFileInput').click();
+            });
+
+            $('#rfi-excelMenu a').on('click', function (e) {
+                e.preventDefault();
+                var downloadType = $(this).data('type');
+                $xlDd.removeClass('open');
+                downloadCategoryExcel(downloadType);
+            });
+
+            // Master "Select All" on current page
+            $('#rfi-selectAllFailed').on('change', function () {
+                var checked = $(this).is(':checked');
+                $('#rfiPage .row-select-checkbox').each(function () {
+                    var id = String($(this).val());
+                    $(this).prop('checked', checked);
+                    if (checked) {
+                        selectedFailedIds.add(id);
+                    } else {
+                        selectedFailedIds.delete(id);
+                    }
+                });
+                updateBulkDeleteButton();
+            });
+
+            // Row-level Checkbox delegation
+            $('#rfiPage').on('change', '.row-select-checkbox', function () {
+                var id = String($(this).val());
+                if ($(this).is(':checked')) {
+                    selectedFailedIds.add(id);
+                } else {
+                    selectedFailedIds.delete(id);
+                }
+
+                syncMasterCheckboxState();
+                updateBulkDeleteButton();
+            });
+
+            // Page Size Change handler
+            $('#rfi-pageSizeFailedSelect').on('change', function () {
+                pageSizeFailed = parseInt($(this).val(), 10);
+                currentPageFailed = 1;
+                renderFailedRecordsTable();
+            });
+
+            // File upload event
+            $('#rfi-excelFileInput').on('change', function (e) {
+                var file = e.target.files[0];
+                if (!file) return;
+
+                var uploadType = currentUploadType;
+                var formData = new FormData();
+                formData.append("file", file);
+                formData.append("type", uploadType);
+
+                $('#rfi-uploadStatusMsg').show().html('<i class="fa fa-spinner fa-spin"></i> Processing & validating ' + escapeHtml(file.name) + ' (' + labels[uploadType] + ')...');
+
+                $.ajax({
+                    url: endpoint('upload'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        $('#rfi-uploadStatusMsg').hide();
+                        var now = new Date();
+                        var formattedDate = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        var rowsInserted = res.insertedRows || 0;
+                        var rowsFailed   = res.failedRows || 0;
+                        var totalInDb    = res.totalRowsInDb == null ? rowsInserted : res.totalRowsInDb;
+
+                        dbRowCounts[uploadType] = totalInDb;
+
+                        var record = {
+                            id: Date.now(),
+                            fileName: file.name,
+                            uploadDate: formattedDate,
+                            fileSize: (file.size / 1024).toFixed(2) + " KB",
+                            recordsInserted: rowsInserted
+                        };
+
+                        uploadedFilesStore[uploadType] = [record];
+
+                        switchCategory(uploadType);
+                        updateBadges();
+
+                        var msg = "• Successfully Inserted: " + rowsInserted + " rows\n• Current Live Records in DB: " + totalInDb;
+                        if (rowsFailed > 0) {
+                            msg += "\n• Rejected / Duplicates: " + rowsFailed + " rows routed below for review.";
+                            showAppAlert("warning", "Upload Completed with Warnings", msg);
+                        } else {
+                            showAppAlert("success", "Upload Successful", msg);
+                        }
+                    },
+                    error: function (xhr) {
+                        $('#rfi-uploadStatusMsg').hide();
+                        refreshLiveDbCounts();
+                        if (activeCategory === uploadType) loadFailedRecords(uploadType);
+                        var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : xhr.statusText;
+                        showAppAlert("error", "Upload Processing Failed", err);
+                    }
+                });
+            });
+
+            // Form submission inside edit modal
+            $('#rfi-editRecordForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var failId    = $('#rfi-editFailId').val();
+                var cardNo    = $('#rfi-editCardNo').val().trim();
+                var rrn       = $('#rfi-editRrn').val().trim();
+                var authId    = $('#rfi-editAuthId').val().trim();
+                var amount    = $('#rfi-editAmount').val().trim();
+                var tranDate  = $('#rfi-editTranDate').val().trim();
+
+                $.ajax({
+                    url: endpoint('failed/correct'),
+                    type: 'POST',
+                    data: {
+                        failId: failId,
+                        sourceType: activeCategory,
+                        cardNo: cardNo,
+                        rrn: rrn,
+                        authId: authId,
+                        amount: amount,
+                        tranDate: tranDate
+                    },
+                    success: function (res) {
+                        closeEditModal();
+                        selectedFailedIds.delete(String(failId));
+                        refreshLiveDbCounts();
+                        loadFailedRecords(activeCategory);
+                        showAppAlert("success", "Successfully Submitted", res.message || "Record successfully updated and added to database without duplicates.");
+                    },
+                    error: function (xhr) {
+                        var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : xhr.statusText;
+                        showAppAlert("error", "Validation Error", err);
+                    }
+                });
+            });
+
+            // Action modal confirm click
+            $('#rfi-appModalConfirmBtn').on('click', function () {
+                var callback = currentConfirmCallback;
+                closeAppModal();
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+
+            switchCategory($('#rfiPage').attr('data-active-category'));
+        });
+
+        // =========================================================================
+        // CUSTOM POPUP MODAL NOTIFICATION ENGINE
+        // =========================================================================
+        function showAppAlert(type, title, message) {
+            var iconClass = "fa-info-circle";
+            if (type === "success") iconClass = "fa-check-circle";
+            if (type === "error")   iconClass = "fa-times-circle";
+            if (type === "warning") iconClass = "fa-exclamation-triangle";
+
+            $('#rfi-appModalIcon').attr('class', 'fa action-alert-icon ' + type + ' ' + iconClass);
+            $('#rfi-appModalTitle').text(title);
+            $('#rfi-appModalText').text(message);
+
+            $('#rfi-appModalCancelBtn').hide();
+            $('#rfi-appModalConfirmBtn').hide();
+            $('#rfi-appModalOkBtn').show();
+
+            $('#rfi-customActionModal').addClass('open');
+        }
+
+        function showAppConfirm(title, message, onConfirm) {
+            $('#rfi-appModalIcon').attr('class', 'fa action-alert-icon warning fa-question-circle');
+            $('#rfi-appModalTitle').text(title);
+            $('#rfi-appModalText').text(message);
+
+            currentConfirmCallback = onConfirm;
+
+            $('#rfi-appModalOkBtn').hide();
+            $('#rfi-appModalCancelBtn').show();
+            $('#rfi-appModalConfirmBtn').show();
+
+            $('#rfi-customActionModal').addClass('open');
+        }
+
+        function closeAppModal() {
+            $('#rfi-customActionModal').removeClass('open');
+            currentConfirmCallback = null;
+        }
+
+        function updateBulkDeleteButton() {
+            var selectedCount = selectedFailedIds.size;
+            if (selectedCount > 0) {
+                $('#rfi-bulkDeleteBtn').show().html('<i class="fa fa-trash"></i> Delete Selected (' + selectedCount + ')');
+                $('#rfi-downloadFailedBtn').html('<i class="fa fa-file-excel-o"></i> Download Selected (' + selectedCount + ')');
+            } else {
+                $('#rfi-bulkDeleteBtn').hide();
+                $('#rfi-downloadFailedBtn').html('<i class="fa fa-file-excel-o"></i> Download Failed');
+            }
+        }
+
+        function refreshLiveDbCounts() {
+            $.ajax({
+                url: endpoint('counts'),
+                type: 'GET',
+                success: function (counts) {
+                    if (counts) {
+                        dbRowCounts = counts;
+                        updateBadges();
+                        renderDedicatedList();
+                    }
+                }
+            });
+        }
+
+        function switchCategory(cat) {
+            activeCategory = categories.indexOf(cat) === -1 ? 'CBS' : cat;
+            selectedFailedIds.clear();
+            currentPageFailed = 1;
+            failedRecordsDataset = [];
+            closeEditModal();
+            closeAppModal();
+            $('.source-header-clickable', '#rfiPage').removeClass('active').attr('aria-pressed', 'false');
+            $('[data-header-for="' + activeCategory + '"]', '#rfiPage').addClass('active').attr('aria-pressed', 'true');
+            $('#rfi-activeCategoryName, #rfi-failedCategoryName').text(labels[activeCategory]);
+            renderDedicatedList();
+            loadFailedRecords(activeCategory);
+        }
+
+        function updateBadges() {
+            categories.forEach(function (cat) {
+                var btn = $('[data-header-for="' + cat + '"]', '#rfiPage');
+                var liveCount = dbRowCounts[cat] || 0;
+                btn.find('.source-badge').text(liveCount.toLocaleString() + " rows");
+                if (liveCount > 0) { btn.addClass('has-data'); } else { btn.removeClass('has-data'); }
+            });
+        }
+
+        function renderDedicatedList() {
+            var files = uploadedFilesStore[activeCategory] || [];
+            var $tbody = $('#rfi-dedicatedFileTableBody');
+            $tbody.empty();
+
+            var liveCount = dbRowCounts[activeCategory] || 0;
+            $('#rfi-categoryFileCount').text(files.length + " file(s) | " + liveCount.toLocaleString() + " total records in DB");
+
+            if (files.length === 0) {
+                $tbody.append(
+                    '<tr>' +
+                        '<td colspan="4" class="no-data">' +
+                            '<i class="fa fa-folder-open-o"></i>' +
+                            'No file uploaded this session for <b>' + labels[activeCategory] + '</b>.<br>' +
+                            '<span style="font-size:12px; color:#555;">Live records currently in DB: <b>' + liveCount.toLocaleString() + '</b></span>' +
+                        '</td>' +
+                    '</tr>'
+                );
+                return;
+            }
+
+            files.forEach(function (file) {
+                var badgeClass = file.recordsInserted > 0 ? 'badge-success-count' : 'badge-zero-count';
+                var rowHtml =
+                    '<tr>' +
+                        '<td style="width: 35%;">' +
+                            '<div class="file-name-cell">' +
+                                '<i class="fa fa-file-text-o"></i>' +
+                                '<span>' + escapeHtml(file.fileName) + '</span>' +
+                            '</div>' +
+                        '</td>' +
+                        '<td style="width: 25%; color: #475569;"><i class="fa fa-clock-o" style="margin-right:6px; color:#94a3b8;"></i>' + file.uploadDate + '</td>' +
+                        '<td style="width: 20%;">' + file.fileSize + '</td>' +
+                        '<td style="width: 20%;">' +
+                            '<span class="' + badgeClass + '">' +
+                                '<i class="fa fa-check-circle"></i> ' + file.recordsInserted.toLocaleString() + ' rows added' +
+                            '</span>' +
+                        '</td>' +
+                    '</tr>';
+                $tbody.append(rowHtml);
+            });
+        }
+
+        // =========================================================================
+        // FAILED RECORDS PAGINATION & RENDERING ENGINE
+        // =========================================================================
+        function loadFailedRecords(cat) {
+            if (failedRequest) failedRequest.abort();
+            $('#rfi-failedCountBadge').text('');
+            $('#rfi-downloadFailedBtn, #rfi-deleteAllFailedBtn, #rfi-bulkDeleteBtn, #rfi-failedPaginationBar').hide();
+            $('#rfi-failedRecordsTableBody').html('<tr><td colspan="8" class="no-data">Loading rejected records…</td></tr>');
+            failedRequest = $.ajax({
+                url: endpoint('failed'),
+                type: 'GET',
+                data: { sourceType: cat },
+                success: function (data) {
+                    failedRecordsDataset = data || [];
+                    var total = failedRecordsDataset.length;
+                    $('#rfi-failedCountBadge').text(total + " record(s)");
+
+                    // Remove cached IDs that no longer exist
+                    var currentIds = new Set(failedRecordsDataset.map(function(r) { return String(r.FAIL_ID); }));
+                    selectedFailedIds.forEach(function(id) {
+                        if (!currentIds.has(id)) {
+                            selectedFailedIds.delete(id);
+                        }
+                    });
+
+                    // Ensure page bounds
+                    var maxPage = Math.ceil(total / pageSizeFailed) || 1;
+                    if (currentPageFailed > maxPage) {
+                        currentPageFailed = maxPage;
+                    }
+
+                    renderFailedRecordsTable();
+                },
+                error: function (xhr, status) {
+                    if (status === 'abort') return;
+                    $('#rfi-failedCountBadge').text('Unavailable');
+                    $('#rfi-failedRecordsTableBody').html('<tr><td colspan="8" class="no-data">Unable to load rejected records.</td></tr>');
+                }
+            });
+        }
+
+        function renderFailedRecordsTable() {
+            var $tbody = $('#rfi-failedRecordsTableBody');
+            $tbody.empty();
+
+            var total = failedRecordsDataset.length;
+
+            if (total === 0) {
+                $('#rfi-downloadFailedBtn').hide();
+                $('#rfi-deleteAllFailedBtn').hide();
+                $('#rfi-failedPaginationBar').hide();
+                $tbody.append('<tr><td colspan="8" class="no-data"><i class="fa fa-check-circle-o" style="color:#22c55e;"></i>All records are valid! No upload failures for ' + labels[activeCategory] + '.</td></tr>');
+                $('#rfi-selectAllFailed').prop('checked', false);
+                updateBulkDeleteButton();
+                return;
+            }
+
+            $('#rfi-downloadFailedBtn').show();
+            $('#rfi-deleteAllFailedBtn').show();
+            $('#rfi-failedPaginationBar').show();
+
+            var startIndex = (currentPageFailed - 1) * pageSizeFailed;
+            var endIndex = Math.min(startIndex + pageSizeFailed, total);
+            var pageRecords = failedRecordsDataset.slice(startIndex, endIndex);
+
+            pageRecords.forEach(function (r) {
+                var failId   = String(r.FAIL_ID);
+                var cardNo   = r.RAW_CARD_NO || '';
+                var rrn      = r.RAW_RRN || '';
+                var authId   = r.RAW_AUTH_ID || '';
+                var amt      = r.RAW_AMOUNT == null ? '' : r.RAW_AMOUNT;
+                var dt       = r.RAW_TRAN_DATE || '';
+                var reason   = r.ERROR_REASON || 'Validation Mismatch';
+                var isChecked = selectedFailedIds.has(failId);
+
+                var $row = $('<tr>').append(
+                    $('<td class="checkbox-cell">').append(
+                        $('<input type="checkbox" class="row-select-checkbox" aria-label="Select rejected record">')
+                            .val(failId).prop('checked', isChecked)
+                    ),
+                    $('<td>').append($('<b>').text(cardNo)),
+                    $('<td>').text(rrn || 'N/A'),
+                    $('<td>').text(authId || 'N/A'),
+                    $('<td>').text(amt),
+                    $('<td>').text(dt),
+                    $('<td>').append($('<span class="badge-error-pill">').text(reason)),
+                    $('<td>').append($('<div class="action-btn-group">').append(
+                        $('<button type="button" class="edit-fail-btn"><i class="fa fa-pencil-square-o"></i> Modify</button>')
+                            .on('click', function () { openEditModal(failId, cardNo, rrn, authId, amt, dt, reason); }),
+                        $('<button type="button" class="delete-fail-btn"><i class="fa fa-trash"></i> Delete</button>')
+                            .on('click', function () { deleteFailedRecord(failId); })
+                    ))
+                );
+                $tbody.append($row);
+            });
+
+            syncMasterCheckboxState();
+            updateBulkDeleteButton();
+            renderPaginationControls(total, startIndex + 1, endIndex);
+        }
+
+        function syncMasterCheckboxState() {
+            var $visible = $('#rfiPage .row-select-checkbox');
+            if ($visible.length === 0) {
+                $('#rfi-selectAllFailed').prop('checked', false);
+                return;
+            }
+            var allChecked = true;
+            $visible.each(function () {
+                if (!$(this).is(':checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            $('#rfi-selectAllFailed').prop('checked', allChecked);
+        }
+
+        function renderPaginationControls(total, startItem, endItem) {
+            $('#rfi-paginationInfoText').text('Showing ' + startItem + ' to ' + endItem + ' of ' + total + ' records');
+
+            var totalPages = Math.ceil(total / pageSizeFailed);
+            var $nav = $('#rfi-paginationNavWrap');
+            $nav.empty();
+
+            var prevDisabled = currentPageFailed === 1 ? 'disabled' : '';
+            $nav.append('<button type="button" class="pagination-btn" ' + prevDisabled + ' onclick="rfiPageActions.changeFailedPage(' + (currentPageFailed - 1) + ')">&laquo; Prev</button>');
+
+            var startPage = Math.max(1, currentPageFailed - 2);
+            var endPage = Math.min(totalPages, currentPageFailed + 2);
+
+            if (startPage > 1) {
+                $nav.append('<button type="button" class="pagination-btn" onclick="rfiPageActions.changeFailedPage(1)">1</button>');
+                if (startPage > 2) {
+                    $nav.append('<span style="padding: 0 4px; color: #94a3b8;">...</span>');
+                }
+            }
+
+            for (var p = startPage; p <= endPage; p++) {
+                var activeClass = p === currentPageFailed ? 'active' : '';
+                $nav.append('<button type="button" class="pagination-btn ' + activeClass + '" onclick="rfiPageActions.changeFailedPage(' + p + ')">' + p + '</button>');
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    $nav.append('<span style="padding: 0 4px; color: #94a3b8;">...</span>');
+                }
+                $nav.append('<button type="button" class="pagination-btn" onclick="rfiPageActions.changeFailedPage(' + totalPages + ')">' + totalPages + '</button>');
+            }
+
+            var nextDisabled = currentPageFailed === totalPages ? 'disabled' : '';
+            $nav.append('<button type="button" class="pagination-btn" ' + nextDisabled + ' onclick="rfiPageActions.changeFailedPage(' + (currentPageFailed + 1) + ')">Next &raquo;</button>');
+        }
+
+        function changeFailedPage(page) {
+            currentPageFailed = page;
+            renderFailedRecordsTable();
+        }
+
+        // Single Record Delete
+        function deleteFailedRecord(failId) {
+            showAppConfirm(
+                "Delete Confirmation",
+                "Are you sure you want to permanently delete this rejected record?",
+                function () {
+                    $.ajax({
+                        url: endpoint('failed/delete'),
+                        type: 'POST',
+                        data: { sourceType: activeCategory, failId: failId },
+                        success: function (res) {
+                            selectedFailedIds.delete(String(failId));
+                            loadFailedRecords(activeCategory);
+                            showAppAlert("success", "Successfully Deleted", res.message || "Record permanently removed from the failure queue.");
+                        },
+                        error: function (xhr) {
+                            var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : xhr.statusText;
+                            showAppAlert("error", "Deletion Failed", err);
+                        }
+                    });
+                }
+            );
+        }
+
+        // Multiple Records Bulk Delete across all pages
+        function deleteSelectedFailedRecords() {
+            var selectedIds = Array.from(selectedFailedIds);
+
+            if (selectedIds.length === 0) {
+                showAppAlert("info", "No Selection", "Please select at least one record to delete.");
+                return;
+            }
+
+            showAppConfirm(
+                "Bulk Deletion Confirmation",
+                "Are you sure you want to delete " + selectedIds.length + " selected record(s) from the failure queue?",
+                function () {
+                    $.ajax({
+                        url: endpoint('failed/delete-selected'),
+                        type: 'POST',
+                        data: { sourceType: activeCategory, failIds: selectedIds },
+                        traditional: true,
+                        success: function (res) {
+                            selectedFailedIds.clear();
+                            loadFailedRecords(activeCategory);
+                            showAppAlert("success", "Successfully Deleted", (res.deletedCount || selectedIds.length) + " rejected record(s) removed successfully.");
+                        },
+                        error: function (xhr) {
+                            var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : xhr.statusText;
+                            showAppAlert("error", "Bulk Deletion Failed", err);
+                        }
+                    });
+                }
+            );
+        }
+
+        // Delete ALL Failed / Duplicate Records for Active Category
+        function deleteAllFailedRecords() {
+            var total = failedRecordsDataset.length;
+            if (total === 0) {
+                showAppAlert("info", "No Records", "There are no rejected records to delete for " + labels[activeCategory] + ".");
+                return;
+            }
+
+            showAppConfirm(
+                "Delete All Confirmation",
+                "Are you sure you want to permanently delete ALL " + total + " rejected/duplicate record(s) for " + labels[activeCategory] + "?\n\nThis action cannot be undone.",
+                function () {
+                    $.ajax({
+                        url: endpoint('failed/delete-all'),
+                        type: 'POST',
+                        data: { sourceType: activeCategory },
+                        success: function (res) {
+                            selectedFailedIds.clear();
+                            loadFailedRecords(activeCategory);
+                            showAppAlert("success", "All Records Deleted", res.message || "All records have been cleared.");
+                        },
+                        error: function (xhr) {
+                            var err = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : xhr.statusText;
+                            showAppAlert("error", "Delete All Failed", err);
+                        }
+                    });
+                }
+            );
+        }
+
+        // Download Failed Records (selected rows only, or all if none selected)
+        function downloadFailedRecords() {
+            var selectedIds = Array.from(selectedFailedIds);
+
+            var url = endpoint("failed/excel") + "?sourceType=" + encodeURIComponent(activeCategory);
+            if (selectedIds.length > 0) {
+                url += "&failIds=" + encodeURIComponent(selectedIds.join(","));
+            }
+
+            window.location.href = url;
+        }
+
+        function openEditModal(failId, cardNo, rrn, authId, amount, tranDate, reason) {
+            $('#rfi-editFailId').val(failId);
+            $('#rfi-editCardNo').val(cardNo);
+            $('#rfi-editRrn').val(rrn);
+            $('#rfi-editAuthId').val(authId);
+            $('#rfi-editAmount').val(amount);
+            $('#rfi-editTranDate').val(tranDate);
+            $('#rfi-editErrorReason').text(reason);
+
+            $('#rfi-editRecordModal').addClass('open');
+        }
+
+        function closeEditModal() {
+            $('#rfi-editRecordModal').removeClass('open');
+        }
+
+        function downloadCategoryExcel(type) {
+            window.location.href = endpoint('excel') + '?type=' + encodeURIComponent(type);
+        }
+
+        function extractData() {
+            window.location.href = endpoint('extract') + '?type=' + encodeURIComponent(activeCategory);
+        }
+
+        window.rfiPageActions = {
+            switchCategory: switchCategory,
+            extractData: extractData,
+            downloadFailedRecords: downloadFailedRecords,
+            deleteSelectedFailedRecords: deleteSelectedFailedRecords,
+            deleteAllFailedRecords: deleteAllFailedRecords,
+            closeEditModal: closeEditModal,
+            closeAppModal: closeAppModal,
+            changeFailedPage: changeFailedPage
+        };
+        })(jQuery);
+    </script>
+</head>
+
+<body>
+	<div th:insert="XBRLHeaderMenu :: header"></div>
+
+	<div id="rfiPage" data-api-base="rfi"
+		th:attr="data-api-base=@{/rfi},data-active-category=${activeCategory}">
+		<input type="file" id="rfi-excelFileInput"
+			accept=".xlsx, .xls, .csv, .txt, .TXT" style="display: none;" />
+
+		<div class="source-data-wrapper">
+			<div class="source-data-card">
+				<div class="source-data-header">
+					<span><i class="fa fa-bar-chart"></i>RFI Data Ingestion
+						&amp; Validation</span>
+				</div>
+
+				<div class="source-data-table-wrapper">
+					<div class="rfi-file-cards" role="group"
+						aria-label="RFI file categories">
+						<button type="button" class="source-header-clickable"
+							data-header-for="CBS" aria-pressed="false"
+							onclick="rfiPageActions.switchCategory('CBS')">
+							<i class="fa fa-database rfi-card-icon" aria-hidden="true"></i> <span
+								class="rfi-card-details"> <span>CBS File/Statement</span>
+								<span class="source-badge">0 rows</span>
+							</span>
+						</button>
+
+						<button type="button" class="source-header-clickable"
+							data-header-for="KTP" aria-pressed="false"
+							onclick="rfiPageActions.switchCategory('KTP')">
+							<i class="fa fa-file-text-o rfi-card-icon" aria-hidden="true"></i>
+							<span class="rfi-card-details"> <span>KTP File</span> <span
+								class="source-badge">0 rows</span>
+							</span>
+						</button>
+
+						<button type="button" class="source-header-clickable"
+							data-header-for="QLIK" aria-pressed="false"
+							onclick="rfiPageActions.switchCategory('QLIK')">
+							<i class="fa fa-bar-chart rfi-card-icon" aria-hidden="true"></i>
+							<span class="rfi-card-details"> <span>Qlik Report</span> <span
+								class="source-badge">0 rows</span>
+							</span>
+						</button>
+					</div>
+
+					<div class="rfi-toolbar">
+						<div class="action-dropdown" id="rfi-uploadDropdown">
+							<button type="button" id="rfi-uploadButton" class="upload-btn"
+								aria-controls="rfi-uploadMenu" aria-expanded="false">
+								<i class="fa fa-upload" aria-hidden="true"></i> Upload <span
+									class="dropdown-arrow" aria-hidden="true">&#9662;</span>
+							</button>
+							<div class="action-dropdown-menu" id="rfi-uploadMenu">
+								<a href="#" data-type="CBS">CBS File/Statement</a> <a href="#"
+									data-type="KTP">KTP File</a> <a href="#" data-type="QLIK">Qlik
+									Report</a>
+							</div>
+						</div>
+
+						<div class="action-dropdown" id="rfi-excelDropdown">
+							<button type="button" id="rfi-excelButton"
+								class="header-action-btn" aria-controls="rfi-excelMenu"
+								aria-expanded="false">
+								<i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel <span
+									class="dropdown-arrow" aria-hidden="true">&#9662;</span>
+							</button>
+							<div class="action-dropdown-menu" id="rfi-excelMenu">
+								<a href="#" data-type="CBS">CBS File/Statement</a> <a href="#"
+									data-type="KTP">KTP File</a> <a href="#" data-type="QLIK">Qlik
+									Report</a>
+							</div>
+						</div>
+
+						<button type="button" class="header-action-btn"
+							onclick="rfiPageActions.extractData()">
+							<i class="fa fa-download" aria-hidden="true"></i> Extract
+						</button>
+					</div>
+
+					<div id="rfi-uploadStatusMsg"></div>
+
+					<!-- 1. Successfully Uploaded Files -->
+					<div class="file-list-container">
+						<div class="file-list-title-bar">
+							<span>Uploaded File(s) for: <strong
+								id="rfi-activeCategoryName">CBS File</strong></span> <span
+								id="rfi-categoryFileCount"
+								style="color: var(- -muted); font-size: 12px;">0 file(s)
+								found</span>
+						</div>
+
+						<table class="dedicated-file-table">
+							<thead>
+								<tr>
+									<th>File Name</th>
+									<th>Upload Date &amp; Time</th>
+									<th>File Size</th>
+									<th>Status / Rows Inserted</th>
+								</tr>
+							</thead>
+							<tbody id="rfi-dedicatedFileTableBody">
+								<tr>
+									<td colspan="4" class="no-data"><i
+										class="fa fa-folder-open-o"></i> No files uploaded for <b>CBS
+											File/Statement</b> yet.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- 2. Failed / Rejected Records Queue with Multi-Select, Pagination & Actions -->
+					<div class="file-list-container"
+						style="border-top: 1px solid var(- -line); border-radius: 10px;">
+						<div class="file-list-title-bar" style="background: #fff1f2;">
+							<div>
+								<span><i class="fa fa-exclamation-triangle"
+									style="color: #e11d48; margin-right: 6px;"></i> Upload
+									Validation Errors &amp; Rejected Records for: <strong
+									id="rfi-failedCategoryName" style="color: #be123c;">CBS
+										File/Statement</strong></span> <span id="rfi-failedCountBadge"
+									class="badge-error-pill" style="margin-left: 8px;">0
+									record(s)</span>
+							</div>
+
+							<!-- Action Toolbar -->
+							<div class="failed-toolbar">
+								<button type="button" id="rfi-downloadFailedBtn"
+									class="download-fail-btn"
+									onclick="rfiPageActions.downloadFailedRecords()">
+									<i class="fa fa-file-excel-o"></i> Download Failed
+								</button>
+								<button type="button" id="rfi-bulkDeleteBtn"
+									class="bulk-delete-btn"
+									onclick="rfiPageActions.deleteSelectedFailedRecords()">
+									<i class="fa fa-trash"></i> Delete Selected
+								</button>
+								<button type="button" id="rfi-deleteAllFailedBtn"
+									class="delete-all-btn"
+									onclick="rfiPageActions.deleteAllFailedRecords()">
+									<i class="fa fa-trash-o"></i> Delete All
+								</button>
+							</div>
+						</div>
+
+						<table class="dedicated-file-table">
+							<thead>
+								<tr>
+									<th class="checkbox-cell"><input type="checkbox"
+										id="rfi-selectAllFailed" title="Select All On Page"></th>
+									<th style="width: 19%;">Card Number</th>
+									<th style="width: 13%;">RRN</th>
+									<th style="width: 11%;">Auth ID</th>
+									<th style="width: 11%;">Amount</th>
+									<th style="width: 11%;">Txn Date</th>
+									<th style="width: 15%;">Error Reason</th>
+									<th style="width: 17%; text-align: center;">Action</th>
+								</tr>
+							</thead>
+							<tbody id="rfi-failedRecordsTableBody">
+								<tr>
+									<td colspan="8" class="no-data"><i
+										class="fa fa-check-circle-o" style="color: #22c55e;"></i> No
+										rejected records found for <b>CBS File</b>.</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- Pagination Controls -->
+						<div class="table-pagination-bar" id="rfi-failedPaginationBar"
+							style="display: none;">
+							<div class="pagination-page-size-wrap">
+								<span>Rows per page:</span> <select
+									id="rfi-pageSizeFailedSelect">
+									<option value="5">5</option>
+									<option value="10" selected>10</option>
+									<option value="25">25</option>
+									<option value="50">50</option>
+								</select> <span id="rfi-paginationInfoText"
+									style="margin-left: 10px; color: var(- -muted);"></span>
+							</div>
+							<div class="pagination-nav-wrap" id="rfi-paginationNavWrap">
+								<!-- Injected dynamically via renderPaginationControls -->
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="source-data-footer">
+					<a th:href="@{/Dashboard}" class="source-btn"><i
+						class="fa fa-home"></i> Home</a> <a href="javascript:history.back();"
+						class="source-btn"><i class="fa fa-chevron-left"></i> Back</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- 3. Edit Failed Record Modal Dialog -->
+		<div class="failed-modal-overlay" id="rfi-editRecordModal">
+			<div class="failed-modal-card">
+				<div class="failed-modal-header">
+					<span><i class="fa fa-pencil-square-o"></i> Edit </span>
+					<button type="button" class="failed-modal-close-x"
+						onclick="rfiPageActions.closeEditModal()">&times;</button>
+				</div>
+
+				<form id="rfi-editRecordForm">
+					<input type="hidden" id="rfi-editFailId" />
+
+					<div class="failed-modal-body">
+						<div class="failed-field full">
+							<label>Reported Rejection Issue:</label> <span
+								id="rfi-editErrorReason"
+								style="font-size: 12px; color: #be123c; font-weight: bold;"></span>
+						</div>
+
+						<div class="failed-field full">
+							<label for="rfi-editCardNo">Card Number (if applicable)</label> <input
+								type="text" id="rfi-editCardNo" maxlength="19" />
+						</div>
+
+						<div class="failed-field">
+							<label for="rfi-editRrn">RRN</label> <input type="text"
+								id="rfi-editRrn" />
+						</div>
+
+						<div class="failed-field">
+							<label for="rfi-editAuthId">Auth ID</label> <input type="text"
+								id="rfi-editAuthId" />
+						</div>
+
+						<div class="failed-field">
+							<label for="rfi-editAmount">Amount</label> <input type="text"
+								id="rfi-editAmount" />
+						</div>
+ 
+						<div class="failed-field">
+							<label for="rfi-editTranDate">Transaction Date</label> <input
+								type="text" id="rfi-editTranDate" placeholder="YYYY-MM-DD" />
+						</div>
+					</div>
+
+					<div class="f	ailed-modal-footer">
+						<button type="button" class="modal-cancel-btn"
+							onclick="rfiPageActions.closeEditModal()">Cancel</button>
+						<button type="submit" class="modal-submit-btn">
+							<i class="fa fa-check"></i> Submit to Database
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- 4. Unified Action Modal (Alerts & Confirmations) -->
+		<div class="failed-modal-overlay" id="rfi-customActionModal">
+			<div class="failed-modal-card" style="max-width: 440px;">
+				<div class="failed-modal-header">
+					<span><i class="fa fa-bell-o"></i>System Notification</span>
+					<button type="button" class="failed-modal-close-x"
+						onclick="rfiPageActions.closeAppModal()">&times;</button>
+				</div>
+
+				<div class="action-alert-body">
+					<i id="rfi-appModalIcon"
+						class="fa fa-info-circle action-alert-icon info"></i>
+					<div id="rfi-appModalTitle" class="action-alert-title">Notification</div>
+					<div id="rfi-appModalText" class="action-alert-text">Details will appear here.</div>
+				</div>
+
+				<div class="failed-modal-footer">
+					<button type="button" id="rfi-appModalCancelBtn"
+						class="modal-cancel-btn" onclick="rfiPageActions.closeAppModal()"
+						style="display: none;">Cancel</button>
+					<button type="button" id="rfi-appModalConfirmBtn"
+						class="modal-submit-btn"
+						style="background: #dc2626; display: none;">Confirm</button>
+					<button type="button" id="rfi-appModalOkBtn"
+						class="modal-submit-btn" onclick="rfiPageActions.closeAppModal()"
+						style="background: var(- -brand);">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

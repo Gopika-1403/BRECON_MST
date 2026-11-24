@@ -1961,6 +1961,11 @@ public class BRECONNavigationController {
 
 		return "SourceData";
 	}
+	//RFI MAPPING 
+		@GetMapping("/RFI")
+		public String showRfiPage() {
+		    return "RFI";
+		}
 
 	@GetMapping("/CBS")
 	public String cbsSourceNav(Model md, HttpServletRequest request) {
